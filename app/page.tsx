@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import DestinationCard from "./components/DestinationCard";
 import { prisma } from "@/app/lib/prisma";
@@ -14,7 +13,7 @@ export default async function Home() {
 
   return (
     <main className="min-h-screen">
-      <Navbar />
+
 
       {/* Hero Section */}
       <section className="px-8 py-24 text-center bg-green-50">

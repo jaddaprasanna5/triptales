@@ -1,21 +1,17 @@
 "use client";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 
 export default function Navbar() {
-  const router = useRouter();
   const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
-    const saved = localStorage.getItem("user");
-    if (saved) setUser(JSON.parse(saved));
+    fetch("/api/auth/me").then(r => r.json()).then(d => setUser(d.user));
   }, []);
 
-  function handleLogout() {
-    localStorage.removeItem("user");
-    setUser(null);
-    router.push("/auth/login");
+  async function handleLogout() {
+    await fetch("/api/auth/logout", { method: "POST" });
+    window.location.href = "/auth/login";
   }
 
   return (
@@ -28,7 +24,6 @@ export default function Navbar() {
       <div className="hidden md:flex gap-8 text-gray-700 font-medium">
         <Link href="/" className="hover:text-green-700">Home</Link>
         <Link href="/destinations"className="hover:text-green-700"> Destinations</Link>
-        <Link href="/travel-guides"className="hover:text-green-700">Travel Guides</Link>
          <Link href="/my-bookings" className="hover;text-green-700">My Bookings</Link>
 
         {/* Login / Hi + Logout - Only this part changed */}

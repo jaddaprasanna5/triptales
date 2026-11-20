@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/app/lib/prisma";
 import bcrypt from "bcryptjs";
+import { createToken } from "@/app/lib/auth";
 
 export async function POST(req: Request) {
   const { email, password } = await req.json();
@@ -20,8 +21,10 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Wrong Password" }, { status: 401 });
   }
 
-  // If everything is ok, then send login success
-  return NextResponse.json({
+  // --Create Cookie Session ---
+  const token = createToken(user);
+
+  const response = NextResponse.json({
     message: "Login success",
     user: {
       id: user.id,
@@ -29,4 +32,12 @@ export async function POST(req: Request) {
       email: user.email,
     },
   });
+
+  response.cookies.set("token", token, {
+    httpOnly: true,
+    path: "/",
+    maxAge: 60 * 60 * 24 * 7, // 7 days
+  });
+
+  return response;
 }

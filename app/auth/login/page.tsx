@@ -1,8 +1,6 @@
 "use client";
 import {useState} from 'react'
-import { useRouter} from 'next/navigation';
 export default function LoginPage(){
-    const router = useRouter();
     const[email,setEmail] = useState("");
     const[password,setPassword] = useState("");
     const[msg,setMsg] = useState("");
@@ -18,11 +16,11 @@ export default function LoginPage(){
     const data = await res.json().catch(() => ({ error:"Server returned empty response"}))
 
    if (res.ok) {
-  // Save user in browser so Home page knows who logged in
-  localStorage.setItem("user", JSON.stringify(data.user));
   setMsg("Login success! Welcome " + data.user.name);
-  // Directly go to Home page
-  router.push("/");
+  // Cookie is saved automatically by server, no localStorage needed
+  window.location.href = "/my-bookings";
+} else {
+  setMsg(data.error || "Login failed");
 }
   }
 
@@ -59,5 +57,3 @@ export default function LoginPage(){
     </div>
   );
 }
-
-    
